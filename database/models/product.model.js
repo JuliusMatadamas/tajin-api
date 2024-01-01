@@ -5,6 +5,7 @@ const ProductSchema = new mongoose.Schema({
         minLength: 5,
         trim: true,
         type: String,
+        required: true
     },
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -24,7 +25,8 @@ const ProductSchema = new mongoose.Schema({
         required: true
     },
     active: {
-        type: Boolean
+        type: Boolean,
+        required: true
     }
 }, {
     timestamps: true // Agregar campos createdAt y updatedAt

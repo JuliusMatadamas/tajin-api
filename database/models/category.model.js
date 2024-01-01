@@ -5,9 +5,11 @@ const CategorySchema = new mongoose.Schema({
         minLength: 5,
         trim: true,
         type: String,
+        required: true
     },
     active: {
-        type: Boolean
+        type: Boolean,
+        required: true
     }
 }, {
     timestamps: true // Agregar campos createdAt y updatedAt

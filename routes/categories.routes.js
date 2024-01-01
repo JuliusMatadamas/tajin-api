@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Category = require('../database/models/category.model');
+const Product = require('../database/models/product.model');
 
 router.get('/categories', (req, res) => {
     Category.find({})
@@ -21,6 +22,19 @@ router.get('/categories/:id', (req, res) => {
             res.status(500).send('An error occurred to tried the category. Error: ' + err.message);
         });
 });
+router.get('/categories/:id/products', async (req, res) => {
+    try {
+        const categoryId = req.params.id;
+
+        // Buscar todos los productos que pertenecen al ID de categoría
+        const products = await Product.find({ categoryId: categoryId, active: true });
+
+        res.status(200).send(products);
+    } catch (err) {
+        res.status(500).send('Error fetching products: ' + err.message);
+    }
+});
+
 router.post('/categories', (req, res) => {
     let category = {
         name:req.body.name,
