@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const mongoose = require('./database/mongoose');
+const categoriesRoutes = require('./routes/categories.routes');
 
 /**
  * *********************************************MODELS*********************************************
@@ -23,29 +24,7 @@ app.get('/', (req, res) => {
 /**
  * *******************************************CATEGORIES*******************************************
  */
-app.get('/categories', (req, res) => {
-    Category.find({})
-        .then((categories) => {
-            res.status(201).send(categories)
-        })
-        .catch((err) => {
-            res.status(500).send('An error occurred to tried get categories. Error: ' + err.message)
-        });
-});
-app.post('/categories', (req, res) => {
-    let category = {
-        name:req.body.name,
-        active:req.body.active
-    }
-
-    Category(category).save()
-        .then((categories) => {
-            res.status(201).send(categories);
-        })
-        .catch((err) => {
-            res.status(500).send('The category could not be registered in the database. Error: ' + err.message)
-        })
-});
+app.use(categoriesRoutes);
 
 app.listen(3000, () => {
     console.log('listening on port 3000');
