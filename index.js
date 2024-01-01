@@ -2,11 +2,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('./database/mongoose');
 const categoriesRoutes = require('./routes/categories.routes');
-
-/**
- * *********************************************MODELS*********************************************
- */
-const Category = require('./database/models/category.model');
+const productsRoutes = require('./routes/products.routes');
 
 /**
  * *******************************************API ROUTES*******************************************
@@ -21,10 +17,8 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
     res.send('Tajín API');
 });
-/**
- * *******************************************CATEGORIES*******************************************
- */
 app.use(categoriesRoutes);
+app.use(productsRoutes);
 
 app.listen(3000, () => {
     console.log('listening on port 3000');
