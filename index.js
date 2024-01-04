@@ -3,6 +3,11 @@ const app = express();
 const mongoose = require('./database/mongoose');
 const categoriesRoutes = require('./routes/categories.routes');
 const productsRoutes = require('./routes/products.routes');
+const customersRoutes = require('./routes/customers.routes');
+const positionsRoutes = require('./routes/positions.routes');
+const employeesRoutes = require('./routes/employees.routes');
+const usersRoutes = require('./routes/users.routes');
+const authRoutes = require('./routes/auth.routes');
 
 /**
  * *******************************************API ROUTES*******************************************
@@ -19,6 +24,11 @@ app.get('/', (req, res) => {
 });
 app.use(categoriesRoutes);
 app.use(productsRoutes);
+app.use(customersRoutes);
+app.use(positionsRoutes);
+app.use(employeesRoutes);
+app.use(usersRoutes);
+app.use(authRoutes);
 
 app.listen(3000, () => {
     console.log('listening on port 3000');
