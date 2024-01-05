@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Customer = require('../database/models/customer.model');
 const Category = require("../database/models/category.model");
+const authenticationToken = require('../middleware/auth.middleware');
 
-router.get('/customers', (req, res) => {
+router.get('/customers', authenticationToken, (req, res) => {
     Customer.find({})
         .then((customers) => {
             res.status(201).send(customers)
@@ -12,7 +13,7 @@ router.get('/customers', (req, res) => {
             res.status(500).send('An error occurred to tried get customers. Error: ' + err.message)
         });
 });
-router.get('/customers/:id', (req, res) => {
+router.get('/customers/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     Customer.findById({_id : id})
         .then((customer) => {
@@ -22,7 +23,7 @@ router.get('/customers/:id', (req, res) => {
             res.status(500).send('An error occurred to tried the customer. Error: ' + err.message);
         });
 });
-router.post('/customers', (req, res) => {
+router.post('/customers', authenticationToken, (req, res) => {
     let customer = {
         name:req.body.name,
         address:req.body.address,
@@ -47,7 +48,7 @@ router.post('/customers', (req, res) => {
             res.status(500).send('The customer could not be registered in the database. Error: ' + err.message)
         })
 });
-router.patch('/customers/:id', (req, res) => {
+router.patch('/customers/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     Customer.findByIdAndUpdate({ _id: id }, { $set: req.body }, { new: true })
         .then((customer) => {
@@ -60,7 +61,7 @@ router.patch('/customers/:id', (req, res) => {
             res.status(500).send('The customer could not be updated due to the error: ' + err.message)
         });
 });
-router.put('/customers/:id', (req, res) => {
+router.put('/customers/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     // Crear el objeto de reemplazo con los datos del cuerpo de la solicitud
     let updatedCustomer = {
@@ -83,7 +84,7 @@ router.put('/customers/:id', (req, res) => {
             res.status(500).send('The costumer could not be updated due to the error: ' + err.message);
         });
 });
-router.delete('/customers/:id', (req, res) => {
+router.delete('/customers/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     // Utilizar findOneAndDelete para eliminar la categoría por su ID
     Customer.findOneAndDelete({ _id: id })

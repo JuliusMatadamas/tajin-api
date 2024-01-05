@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Position = require('../database/models/position.model');
 const Employee = require('../database/models/employee.model');
+const authenticationToken = require('../middleware/auth.middleware');
 
-router.get('/positions', (req, res) => {
+router.get('/positions', authenticationToken, (req, res) => {
     Position.find({})
         .then((positions) => {
             res.status(201).send(positions)
@@ -12,7 +13,7 @@ router.get('/positions', (req, res) => {
             res.status(500).send('An error occurred to tried get positions. Error: ' + err.message)
         });
 });
-router.get('/positions/:id', (req, res) => {
+router.get('/positions/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     Position.findById({_id : id})
         .then((position) => {
@@ -22,7 +23,7 @@ router.get('/positions/:id', (req, res) => {
             res.status(500).send('An error occurred to tried the position. Error: ' + err.message);
         });
 });
-router.get('/positions/:id/employees', async (req, res) => {
+router.get('/positions/:id/employees', authenticationToken, async (req, res) => {
     try {
         const positionId = req.params.id;
 
@@ -35,7 +36,7 @@ router.get('/positions/:id/employees', async (req, res) => {
     }
 });
 
-router.post('/positions', (req, res) => {
+router.post('/positions', authenticationToken, (req, res) => {
     let position = {
         name:req.body.name,
         active:req.body.active
@@ -49,7 +50,7 @@ router.post('/positions', (req, res) => {
             res.status(500).send('The positions could not be registered in the database. Error: ' + err.message)
         })
 });
-router.put('/positions/:id', (req, res) => {
+router.put('/positions/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     // Crear el objeto de reemplazo con los datos del cuerpo de la solicitud
     let updatedPosition = {
@@ -70,7 +71,7 @@ router.put('/positions/:id', (req, res) => {
             res.status(500).send('The position could not be updated due to the error: ' + err.message);
         });
 });
-router.patch('/positions/:id', (req, res) => {
+router.patch('/positions/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     Position.findByIdAndUpdate({ _id: id }, { $set: req.body }, { new: true })
         .then((position) => {
@@ -83,7 +84,7 @@ router.patch('/positions/:id', (req, res) => {
             res.status(500).send('The position could not be updated due to the error: ' + err.message)
         });
 });
-router.delete('/positions/:id', (req, res) => {
+router.delete('/positions/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     // Utilizar findOneAndDelete para eliminar la categoría por su ID
     Position.findOneAndDelete({ _id: id })

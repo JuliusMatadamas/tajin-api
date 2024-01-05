@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Category = require('../database/models/category.model');
 const Product = require('../database/models/product.model');
+const authenticationToken = require('../middleware/auth.middleware');
 
-router.get('/categories', (req, res) => {
+router.get('/categories', authenticationToken, (req, res) => {
     Category.find({})
         .then((categories) => {
             res.status(201).send(categories)
@@ -12,7 +13,7 @@ router.get('/categories', (req, res) => {
             res.status(500).send('An error occurred to tried get categories. Error: ' + err.message)
         });
 });
-router.get('/categories/:id', (req, res) => {
+router.get('/categories/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     Category.findById({_id : id})
         .then((category) => {
@@ -22,7 +23,7 @@ router.get('/categories/:id', (req, res) => {
             res.status(500).send('An error occurred to tried the category. Error: ' + err.message);
         });
 });
-router.get('/categories/:id/products', async (req, res) => {
+router.get('/categories/:id/products', authenticationToken, async (req, res) => {
     try {
         const categoryId = req.params.id;
 
@@ -35,7 +36,7 @@ router.get('/categories/:id/products', async (req, res) => {
     }
 });
 
-router.post('/categories', (req, res) => {
+router.post('/categories', authenticationToken, (req, res) => {
     let category = {
         name:req.body.name,
         active:req.body.active
@@ -49,7 +50,7 @@ router.post('/categories', (req, res) => {
             res.status(500).send('The category could not be registered in the database. Error: ' + err.message)
         })
 });
-router.put('/categories/:id', (req, res) => {
+router.put('/categories/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     // Crear el objeto de reemplazo con los datos del cuerpo de la solicitud
     let updatedCategory = {
@@ -70,7 +71,7 @@ router.put('/categories/:id', (req, res) => {
             res.status(500).send('The category could not be updated due to the error: ' + err.message);
         });
 });
-router.patch('/categories/:id', (req, res) => {
+router.patch('/categories/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     Category.findByIdAndUpdate({ _id: id }, { $set: req.body }, { new: true })
         .then((category) => {
@@ -83,7 +84,7 @@ router.patch('/categories/:id', (req, res) => {
             res.status(500).send('The category could not be updated due to the error: ' + err.message)
         });
 });
-router.delete('/categories/:id', (req, res) => {
+router.delete('/categories/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     // Utilizar findOneAndDelete para eliminar la categoría por su ID
     Category.findOneAndDelete({ _id: id })

@@ -3,8 +3,9 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const User = require('../database/models/user.model');
 const Employee = require('../database/models/employee.model');
+const authenticationToken = require('../middleware/auth.middleware');
 
-router.get('/users', (req, res) => {
+router.get('/users', authenticationToken, (req, res) => {
     User.find({})
         .then((users) => {
             res.status(201).send(users)
@@ -13,7 +14,7 @@ router.get('/users', (req, res) => {
             res.status(500).send('An error occurred to tried get users. Error: ' + err.message)
         });
 });
-router.get('/users/:id', (req, res) => {
+router.get('/users/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     Users.findById({_id : id})
         .then((user) => {
@@ -23,7 +24,7 @@ router.get('/users/:id', (req, res) => {
             res.status(500).send('An error occurred to tried the user. Error: ' + err.message);
         });
 });
-router.post('/users', async (req, res) => {
+router.post('/users', authenticationToken, async (req, res) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const uppercaseRegex = /[A-Z]/;
     const numberRegex = /\d/;
@@ -86,7 +87,7 @@ router.post('/users', async (req, res) => {
             res.status(500).send('The user could not be registered in the database. Error: ' + err.message)
         })
 });
-router.put('/users/:id', (req, res) => {
+router.put('/users/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     // Crear el objeto de reemplazo con los datos del cuerpo de la solicitud
     let updatedUser = {
@@ -108,7 +109,7 @@ router.put('/users/:id', (req, res) => {
             res.status(500).send('The user could not be updated due to the error: ' + err.message);
         });
 });
-router.patch('/users/:id', (req, res) => {
+router.patch('/users/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     User.findByIdAndUpdate({ _id: id }, { $set: req.body }, { new: true })
         .then((user) => {
@@ -121,7 +122,7 @@ router.patch('/users/:id', (req, res) => {
             res.status(500).send('The user could not be updated due to the error: ' + err.message)
         });
 });
-router.delete('/users/:id', (req, res) => {
+router.delete('/users/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     // Utilizar findOneAndDelete para eliminar la categoría por su ID
     User.findOneAndDelete({ _id: id })

@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Employee = require('../database/models/employee.model');
+const authenticationToken = require('../middleware/auth.middleware');
 
-router.get('/employees', (req, res) => {
+
+router.get('/employees', authenticationToken, (req, res) => {
     Employee.find({})
         .then((employees) => {
             res.status(201).send(employees)
@@ -11,7 +13,7 @@ router.get('/employees', (req, res) => {
             res.status(500).send('An error occurred to tried get employees. Error: ' + err.message)
         });
 });
-router.get('/employees/:id', (req, res) => {
+router.get('/employees/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     Employee.findById({_id : id})
         .then((employee) => {
@@ -21,7 +23,7 @@ router.get('/employees/:id', (req, res) => {
             res.status(500).send('An error occurred to tried the employee. Error: ' + err.message);
         });
 });
-router.post('/employees', (req, res) => {
+router.post('/employees', authenticationToken, (req, res) => {
     let employee = {
         firstname:req.body.firstname,
         lastname:req.body.lastname,
@@ -44,7 +46,7 @@ router.post('/employees', (req, res) => {
             res.status(500).send('The employee could not be registered in the database. Error: ' + err.message)
         })
 });
-router.put('/employees/:id', (req, res) => {
+router.put('/employees/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     // Crear el objeto de reemplazo con los datos del cuerpo de la solicitud
     let updatedEmployee = {
@@ -74,7 +76,7 @@ router.put('/employees/:id', (req, res) => {
             res.status(500).send('The employee could not be updated due to the error: ' + err.message);
         });
 });
-router.patch('/employees/:id', (req, res) => {
+router.patch('/employees/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     Employee.findByIdAndUpdate({ _id: id }, { $set: req.body }, { new: true })
         .then((employee) => {
@@ -87,7 +89,7 @@ router.patch('/employees/:id', (req, res) => {
             res.status(500).send('The employee could not be updated due to the error: ' + err.message)
         });
 });
-router.delete('/employees/:id', (req, res) => {
+router.delete('/employees/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     // Utilizar findOneAndDelete para eliminar la categoría por su ID
     Employee.findOneAndDelete({ _id: id })

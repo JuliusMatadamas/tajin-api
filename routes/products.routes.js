@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Category = require('../database/models/category.model');
 const Product = require('../database/models/product.model');
+const authenticationToken = require('../middleware/auth.middleware');
 
-router.get('/products', (req, res) => {
+
+router.get('/products', authenticationToken, (req, res) => {
     Product.find({})
         .then((products) => {
             res.status(201).send(products)
@@ -12,7 +14,7 @@ router.get('/products', (req, res) => {
             res.status(500).send('An error occurred to tried get products. Error: ' + err.message)
         });
 });
-router.get('/products/:id', (req, res) => {
+router.get('/products/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     Product.findById({_id : id})
         .then((product) => {
@@ -22,7 +24,7 @@ router.get('/products/:id', (req, res) => {
             res.status(500).send('An error occurred to tried the product. Error: ' + err.message);
         });
 });
-router.post('/products', async (req, res) => {
+router.post('/products', authenticationToken, async (req, res) => {
     try {
         const categoryId = req.body.categoryId;
 
@@ -48,7 +50,7 @@ router.post('/products', async (req, res) => {
         res.status(500).send('The product could not be registered in the database. Error: ' + err.message);
     }
 });
-router.patch('/products/:id', (req, res) => {
+router.patch('/products/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     Product.findByIdAndUpdate({ _id: id }, { $set: req.body }, { new: true })
         .then((product) => {
@@ -61,7 +63,7 @@ router.patch('/products/:id', (req, res) => {
             res.status(500).send('The product could not be updated due to the error: ' + err.message)
         });
 });
-router.put('/products/:id', (req, res) => {
+router.put('/products/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     // Crear el objeto de reemplazo con los datos del cuerpo de la solicitud
     let updatedProduct = {
@@ -84,7 +86,7 @@ router.put('/products/:id', (req, res) => {
             res.status(500).send('The product could not be updated due to the error: ' + err.message);
         });
 });
-router.delete('/products/:id', (req, res) => {
+router.delete('/products/:id', authenticationToken, (req, res) => {
     let id = req.params.id;
     // Utilizar findOneAndDelete para eliminar la categoría por su ID
     Product.findOneAndDelete({ _id: id })
